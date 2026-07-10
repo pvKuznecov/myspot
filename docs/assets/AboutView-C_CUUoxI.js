@@ -1,0 +1,1 @@
+import{a as e,n as t,r as n,t as r}from"./index-BTSQL797.js";var i={class:`about`},a=r({__name:`AboutView`,setup(r){return(r,a)=>(e(),n(`div`,i,[...a[0]||=[t(`h1`,null,`About`,-1)]]))}},[[`__scopeId`,`data-v-31af52e2`]]);export{a as default};

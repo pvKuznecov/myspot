@@ -1,0 +1,19 @@
+.main_footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    min-width: 800px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-shrink: 0;
+  /* Ваши стили */
+  background: #2c3e50;
+  color: white;
+  padding: 16px 20px;
+  text-align: center;
+  position: sticky;
+  bottom: 10px;
+  z-index: 10000; /* Чтобы был поверх всего */
+}
