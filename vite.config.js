@@ -15,6 +15,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  base: '/myspot/',
   // 👇 Добавляем блок build
   build: {
     outDir: 'docs', // Папка для сборки
