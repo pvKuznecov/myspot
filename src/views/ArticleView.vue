@@ -1,13 +1,13 @@
 <template>
   <div class="article-page">
     <div v-if="loading" class="loading">
-      ⏳ Загрузка статьи...
+      <div class="spinner">⏳</div>
+      <p>Загрузка статьи...</p>
     </div>
     
     <div v-else-if="error" class="error">
-      ❌ {{ error }}
-      <br>
-      <router-link to="/articles">Вернуться к списку</router-link>
+      <p>❌ {{ error }}</p>
+      <router-link to="/articles" class="back-link">← Вернуться к списку</router-link>
     </div>
     
     <div v-else-if="article" class="article-content">
@@ -46,37 +46,47 @@ export default {
         this.loading = true
         this.error = null
         
-        const slug = this.$route.params.slug
+        let slug = this.$route.params.slug
         
-        // Ищем файл через glob
-        const modules = import.meta.glob('@/content/articles/*.md', {
-          eager: false,
-          query: '?raw',
-          import: 'default'
-        })
+        // Очищаем slug от пробелов и спецсимволов
+        slug = slug.replace(/\s+/g, '-')
         
-        let foundPath = null
-        for (const path of Object.keys(modules)) {
-          const fileName = path.split('/').pop().replace('.md', '')
-          if (fileName === slug) {
-            foundPath = path
-            break
+        // Проверка на пустой slug
+        if (!slug) {
+          throw new Error('Не указана статья')
+        }
+        
+        // Динамический импорт
+        try {
+          const module = await import(`@/content/articles/${slug}.md`)
+          this.article = markRaw(module.default)
+        } catch (importError) {
+          // Пробуем найти файл через glob
+          const modules = import.meta.glob('@/content/articles/*.md', {
+            eager: false
+          })
+          
+          let found = false
+          for (const [path, importFn] of Object.entries(modules)) {
+            const fileName = path.split('/').pop().replace(/\.md$/, '')
+            const cleanFileName = fileName.replace(/\s+/g, '-')
+            
+            if (cleanFileName === slug || fileName === slug) {
+              const module = await importFn()
+              this.article = markRaw(module.default)
+              found = true
+              break
+            }
+          }
+          
+          if (!found) {
+            throw new Error(`Статья "${slug}" не найдена`)
           }
         }
         
-        if (!foundPath) {
-          throw new Error(`Статья "${slug}" не найдена`)
-        }
-        
-        // Импортируем как Vue-компонент
-        const articleModule = await import(`@/content/articles/${slug}.md`)
-        
-        // Используем markRaw, чтобы Vue не делал компонент реактивным
-        this.article = markRaw(articleModule.default)
-        
       } catch (err) {
-        console.error('Статья не найдена:', err)
-        this.error = 'Статья не найдена'
+        console.error('Ошибка загрузки статьи:', err)
+        this.error = 'Статья не найдена или произошла ошибка загрузки'
         this.article = null
       } finally {
         this.loading = false
@@ -95,14 +105,45 @@ export default {
 
 .loading, .error {
   text-align: center;
-  padding: 40px;
+  padding: 60px 20px;
   background: #1a1a1a;
   border-radius: 12px;
-  margin: 20px 0;
+  margin: 40px 0;
+}
+
+.loading {
+  color: #8ab4f8;
+}
+
+.spinner {
+  font-size: 48px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .error {
   color: #ff6b6b;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 15px;
+  color: #8ab4f8;
+  text-decoration: none;
+  padding: 8px 20px;
+  border: 1px solid #8ab4f8;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.back-link:hover {
+  background: #8ab4f8;
+  color: #1a1a1a;
 }
 
 .article-content {
@@ -115,6 +156,7 @@ export default {
   font-size: 2.2em;
   border-bottom: 2px solid #333;
   padding-bottom: 15px;
+  margin-bottom: 30px;
 }
 
 .article-content :deep(h2) {
@@ -123,11 +165,24 @@ export default {
   color: #8ab4f8;
 }
 
+.article-content :deep(h3) {
+  font-size: 1.4em;
+  margin-top: 1.2em;
+  color: #a0c4ff;
+}
+
+.article-content :deep(p) {
+  line-height: 1.8;
+  color: #d0d0d0;
+  margin: 16px 0;
+}
+
 .article-content :deep(pre) {
   background: #0d0d0d;
   padding: 16px;
   border-radius: 8px;
   overflow-x: auto;
+  margin: 16px 0;
 }
 
 .article-content :deep(code) {
@@ -135,6 +190,12 @@ export default {
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+.article-content :deep(pre code) {
+  background: transparent;
+  padding: 0;
 }
 
 .article-content :deep(blockquote) {
@@ -149,11 +210,6 @@ export default {
   max-width: 100%;
   border-radius: 8px;
   margin: 20px 0;
-}
-
-.article-content :deep(p) {
-  line-height: 1.8;
-  color: #d0d0d0;
 }
 
 .article-content :deep(ul), 
@@ -173,5 +229,11 @@ export default {
 
 .article-content :deep(a:hover) {
   text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .article-content {
+    padding: 20px;
+  }
 }
 </style>

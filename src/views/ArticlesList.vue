@@ -16,9 +16,7 @@
     </div>
 
     <article v-for="art in articles" :key="art.slug" class="article-item">
-      <!-- <router-link :to="`/articles/${art.slug}`" class="article-link"> -->
-      <router-link :to="`/articles/${encodeURIComponent(art.slug)}`" class="article-link">
-        <!-- Картинка-превью -->
+      <router-link :to="`/articles/${art.slug}`" class="article-link">
         <div v-if="art.image" class="article-image">
           <img :src="art.image" :alt="art.title" loading="lazy" />
         </div>
@@ -50,7 +48,8 @@ export default {
     return {
       articles: [],
       loading: true,
-      error: null
+      error: null,
+      baseUrl: import.meta.env.BASE_URL || '/'
     }
   },
   
@@ -64,12 +63,15 @@ export default {
         this.loading = true
         this.error = null
         
+        // Получаем все .md файлы
         const modules = import.meta.glob('@/content/articles/*.md', { 
           as: 'raw',
           eager: false 
         })
         
-        if (Object.keys(modules).length === 0) {
+        const paths = Object.keys(modules)
+        
+        if (paths.length === 0) {
           this.articles = []
           this.loading = false
           return
@@ -77,28 +79,62 @@ export default {
         
         const loadedArticles = []
         
-        for (const [path, importFn] of Object.entries(modules)) {
+        for (const path of paths) {
           try {
-            const rawContent = await importFn()
+            const importFn = modules[path]
+            let rawContent = await importFn()
+            
+            // Проверяем, что rawContent - это строка
+            if (typeof rawContent !== 'string') {
+              // Если это объект, пробуем извлечь строку
+              if (rawContent && typeof rawContent === 'object') {
+                // Пробуем разные варианты
+                rawContent = rawContent.default || rawContent.toString?.() || JSON.stringify(rawContent)
+              }
+            }
+            
+            // Если всё ещё не строка - пропускаем
+            if (typeof rawContent !== 'string') {
+              console.error(`Файл ${path} не является строкой:`, typeof rawContent)
+              continue
+            }
+            
+            // Парсим Frontmatter
             const parsed = fm(rawContent)
-            const slug = path.split('/').pop().replace('.md', '')
+            
+            // Получаем slug из имени файла (без расширения)
+            let slug = path.split('/').pop().replace(/\.md$/, '')
+            
+            // Если в slug есть пробелы, заменяем на дефисы
+            slug = slug.replace(/\s+/g, '-')
+            
+            let image = parsed.attributes.image || ''
+            if (image) {
+              image = this.baseUrl + image.replace(/^\//, '')
+            }
             
             loadedArticles.push({
-              slug,
+              slug: slug,
               title: parsed.attributes.title || 'Без названия',
               date: parsed.attributes.date || '1970-01-01',
               description: parsed.attributes.description || '',
-              tags: parsed.attributes.tags || [],
-              image: parsed.attributes.image || '', // <-- Здесь поле image
-              content: parsed.body
+              tags: Array.isArray(parsed.attributes.tags) ? parsed.attributes.tags : [],
+              image: image,
+              content: parsed.body || ''
             })
+            
           } catch (err) {
             console.error(`Ошибка загрузки ${path}:`, err)
-            this.error = `Ошибка загрузки файла: ${path}`
           }
         }
         
-        loadedArticles.sort((a, b) => new Date(b.date) - new Date(a.date))
+        // Сортируем по дате (новые сверху)
+        loadedArticles.sort((a, b) => {
+          const dateA = new Date(a.date)
+          const dateB = new Date(b.date)
+          return dateB - dateA
+        })
+        
         this.articles = loadedArticles
         
       } catch (err) {
@@ -159,7 +195,6 @@ export default {
   color: inherit;
 }
 
-/* Стили для картинки-превью */
 .article-image {
   flex-shrink: 0;
   width: 200px;
@@ -173,11 +208,6 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.article-item:hover .article-image img {
-  transform: scale(1.05);
 }
 
 .article-content {
@@ -235,7 +265,6 @@ code {
   font-size: 0.9em;
 }
 
-/* Адаптив для мобильных */
 @media (max-width: 600px) {
   .article-link {
     flex-direction: column;
