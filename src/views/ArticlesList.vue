@@ -39,8 +39,6 @@
 </template>
 
 <script>
-import fm from 'front-matter'
-
 export default {
   name: 'ArticlesList',
   
@@ -63,10 +61,9 @@ export default {
         this.loading = true
         this.error = null
         
-        // Получаем все .md файлы
-        const modules = import.meta.glob('@/content/articles/*.md', { 
-          as: 'raw',
-          eager: false 
+        // Импортируем все .md файлы как компоненты (без raw)
+        const modules = import.meta.glob('@/content/articles/*.md', {
+          eager: false
         })
         
         const paths = Object.keys(modules)
@@ -82,45 +79,31 @@ export default {
         for (const path of paths) {
           try {
             const importFn = modules[path]
-            let rawContent = await importFn()
+            const module = await importFn()
             
-            // Проверяем, что rawContent - это строка
-            if (typeof rawContent !== 'string') {
-              // Если это объект, пробуем извлечь строку
-              if (rawContent && typeof rawContent === 'object') {
-                // Пробуем разные варианты
-                rawContent = rawContent.default || rawContent.toString?.() || JSON.stringify(rawContent)
-              }
-            }
-            
-            // Если всё ещё не строка - пропускаем
-            if (typeof rawContent !== 'string') {
-              console.error(`Файл ${path} не является строкой:`, typeof rawContent)
-              continue
-            }
-            
-            // Парсим Frontmatter
-            const parsed = fm(rawContent)
-            
-            // Получаем slug из имени файла (без расширения)
+            // Получаем slug из имени файла
             let slug = path.split('/').pop().replace(/\.md$/, '')
-            
-            // Если в slug есть пробелы, заменяем на дефисы
             slug = slug.replace(/\s+/g, '-')
             
-            let image = parsed.attributes.image || ''
+            // Пробуем получить метаданные из module
+            // unplugin-vue-markdown может хранить frontmatter в разных местах
+            const meta = module.__frontmatter || module.frontmatter || {}
+            
+            let image = meta.image || ''
             if (image) {
+              // Убираем слеш в начале если есть, добавляем baseUrl
               image = this.baseUrl + image.replace(/^\//, '')
             }
             
             loadedArticles.push({
               slug: slug,
-              title: parsed.attributes.title || 'Без названия',
-              date: parsed.attributes.date || '1970-01-01',
-              description: parsed.attributes.description || '',
-              tags: Array.isArray(parsed.attributes.tags) ? parsed.attributes.tags : [],
+              title: meta.title || 'Без названия',
+              date: meta.date || '1970-01-01',
+              description: meta.description || '',
+              tags: Array.isArray(meta.tags) ? meta.tags : [],
               image: image,
-              content: parsed.body || ''
+              // Сохраняем компонент для быстрого доступа
+              component: module.default
             })
             
           } catch (err) {
@@ -128,7 +111,7 @@ export default {
           }
         }
         
-        // Сортируем по дате (новые сверху)
+        // Сортируем по дате
         loadedArticles.sort((a, b) => {
           const dateA = new Date(a.date)
           const dateB = new Date(b.date)

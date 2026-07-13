@@ -47,42 +47,34 @@ export default {
         this.error = null
         
         let slug = this.$route.params.slug
-        
-        // Очищаем slug от пробелов и спецсимволов
         slug = slug.replace(/\s+/g, '-')
         
-        // Проверка на пустой slug
         if (!slug) {
           throw new Error('Не указана статья')
         }
         
-        // Динамический импорт
-        try {
-          const module = await import(`@/content/articles/${slug}.md`)
-          this.article = markRaw(module.default)
-        } catch (importError) {
-          // Пробуем найти файл через glob
-          const modules = import.meta.glob('@/content/articles/*.md', {
-            eager: false
-          })
+        // Пробуем найти файл через glob
+        const modules = import.meta.glob('@/content/articles/*.md', {
+          eager: false
+        })
+        
+        let foundModule = null
+        
+        for (const [path, importFn] of Object.entries(modules)) {
+          const fileName = path.split('/').pop().replace(/\.md$/, '')
+          const cleanFileName = fileName.replace(/\s+/g, '-')
           
-          let found = false
-          for (const [path, importFn] of Object.entries(modules)) {
-            const fileName = path.split('/').pop().replace(/\.md$/, '')
-            const cleanFileName = fileName.replace(/\s+/g, '-')
-            
-            if (cleanFileName === slug || fileName === slug) {
-              const module = await importFn()
-              this.article = markRaw(module.default)
-              found = true
-              break
-            }
-          }
-          
-          if (!found) {
-            throw new Error(`Статья "${slug}" не найдена`)
+          if (cleanFileName === slug || fileName === slug) {
+            foundModule = await importFn()
+            break
           }
         }
+        
+        if (!foundModule) {
+          throw new Error(`Статья "${slug}" не найдена`)
+        }
+        
+        this.article = markRaw(foundModule.default)
         
       } catch (err) {
         console.error('Ошибка загрузки статьи:', err)
