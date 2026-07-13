@@ -18,7 +18,15 @@
     <article v-for="art in articles" :key="art.slug" class="article-item">
       <router-link :to="`/articles/${art.slug}`" class="article-link">
         <div v-if="art.image" class="article-image">
-          <img :src="art.image" :alt="art.title" loading="lazy" />
+          <img 
+            :src="art.image" 
+            :alt="art.title" 
+            loading="lazy"
+            @error="handleImageError"
+          />
+        </div>
+        <div v-else class="article-image-placeholder">
+          <span>📄</span>
         </div>
         
         <div class="article-content">
@@ -58,12 +66,33 @@ export default {
   },
   
   methods: {
+    handleImageError(event) {
+      // Если картинка не загрузилась, показываем заглушку
+      event.target.style.display = 'none'
+      // Ищем родительский контейнер и добавляем плейсхолдер
+      const container = event.target.closest('.article-image')
+      if (container) {
+        const placeholder = document.createElement('span')
+        placeholder.textContent = '🖼️'
+        placeholder.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          font-size: 3em;
+          background: #2d2d2d;
+          color: #666;
+        `
+        container.appendChild(placeholder)
+      }
+    },
+    
     async loadArticles() {
       try {
         this.loading = true
         this.error = null
         
-        // Используем ?raw для получения текста
         const modules = import.meta.glob('@/content/articles/*.md', {
           eager: false,
           query: '?raw',
@@ -85,36 +114,40 @@ export default {
             const importFn = modules[path]
             const rawContent = await importFn()
             
-            // Проверяем, что получили строку
             let content = rawContent
-            
-            // Если это объект, пробуем извлечь строку
             if (typeof content === 'object' && content !== null) {
-              if (content.default) {
-                content = content.default
-              } else if (content.toString) {
-                content = content.toString()
-              } else {
-                content = JSON.stringify(content)
-              }
+              content = content.default || content.toString?.() || JSON.stringify(content)
             }
             
-            // Если не строка - пропускаем
             if (typeof content !== 'string') {
               console.error(`Файл ${path} не является строкой`)
               continue
             }
             
-            // Парсим Frontmatter
             const parsed = fm(content)
             
-            // Получаем slug
             let slug = path.split('/').pop().replace(/\.md$/, '')
             slug = slug.replace(/\s+/g, '-')
             
+            // Обработка картинки
             let image = parsed.attributes.image || ''
+            
             if (image) {
-              image = this.baseUrl + image.replace(/^\//, '')
+              // Если путь начинается с http или https - оставляем как есть
+              if (image.startsWith('http://') || image.startsWith('https://')) {
+                // Внешняя картинка
+              } 
+              // Если путь начинается с / - добавляем baseUrl
+              else if (image.startsWith('/')) {
+                // Убираем лишние слеши
+                const cleanPath = image.replace(/^\//, '')
+                image = `${this.baseUrl}${cleanPath}`
+              }
+              // Относительный путь - пробуем разные варианты
+              else {
+                // Пробуем с baseUrl и без
+                image = `${this.baseUrl}images/${image}`
+              }
             }
             
             loadedArticles.push({
@@ -132,7 +165,6 @@ export default {
           }
         }
         
-        // Сортируем по дате
         loadedArticles.sort((a, b) => {
           const dateA = new Date(a.date)
           const dateB = new Date(b.date)
@@ -206,12 +238,31 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   background: #2d2d2d;
+  position: relative;
 }
 
 .article-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.article-item:hover .article-image img {
+  transform: scale(1.05);
+}
+
+.article-image-placeholder {
+  flex-shrink: 0;
+  width: 200px;
+  height: 120px;
+  border-radius: 8px;
+  background: #2d2d2d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3em;
+  color: #666;
 }
 
 .article-content {
@@ -274,7 +325,8 @@ code {
     flex-direction: column;
   }
   
-  .article-image {
+  .article-image,
+  .article-image-placeholder {
     width: 100%;
     height: 200px;
   }
