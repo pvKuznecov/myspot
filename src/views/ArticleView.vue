@@ -53,32 +53,37 @@ export default {
           throw new Error('Не указана статья')
         }
         
-        // Пробуем найти файл через glob
-        const modules = import.meta.glob('@/content/articles/*.md', {
-          eager: false
-        })
-        
-        let foundModule = null
-        
-        for (const [path, importFn] of Object.entries(modules)) {
-          const fileName = path.split('/').pop().replace(/\.md$/, '')
-          const cleanFileName = fileName.replace(/\s+/g, '-')
+        // Пробуем импортировать напрямую
+        try {
+          const module = await import(`@/content/articles/${slug}.md`)
+          this.article = markRaw(module.default)
+        } catch (directError) {
+          // Если не нашло, ищем через glob
+          const modules = import.meta.glob('@/content/articles/*.md', {
+            eager: false
+          })
           
-          if (cleanFileName === slug || fileName === slug) {
-            foundModule = await importFn()
-            break
+          let found = false
+          for (const [path, importFn] of Object.entries(modules)) {
+            const fileName = path.split('/').pop().replace(/\.md$/, '')
+            const cleanFileName = fileName.replace(/\s+/g, '-')
+            
+            if (cleanFileName === slug || fileName === slug) {
+              const module = await importFn()
+              this.article = markRaw(module.default)
+              found = true
+              break
+            }
+          }
+          
+          if (!found) {
+            throw new Error(`Статья "${slug}" не найдена`)
           }
         }
         
-        if (!foundModule) {
-          throw new Error(`Статья "${slug}" не найдена`)
-        }
-        
-        this.article = markRaw(foundModule.default)
-        
       } catch (err) {
         console.error('Ошибка загрузки статьи:', err)
-        this.error = 'Статья не найдена или произошла ошибка загрузки'
+        this.error = 'Статья не найдена'
         this.article = null
       } finally {
         this.loading = false

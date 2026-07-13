@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import fm from 'front-matter'
+
 export default {
   name: 'ArticlesList',
   
@@ -61,9 +63,11 @@ export default {
         this.loading = true
         this.error = null
         
-        // Импортируем все .md файлы как компоненты (без raw)
+        // Используем ?raw для получения текста
         const modules = import.meta.glob('@/content/articles/*.md', {
-          eager: false
+          eager: false,
+          query: '?raw',
+          import: 'default'
         })
         
         const paths = Object.keys(modules)
@@ -79,31 +83,48 @@ export default {
         for (const path of paths) {
           try {
             const importFn = modules[path]
-            const module = await importFn()
+            const rawContent = await importFn()
             
-            // Получаем slug из имени файла
+            // Проверяем, что получили строку
+            let content = rawContent
+            
+            // Если это объект, пробуем извлечь строку
+            if (typeof content === 'object' && content !== null) {
+              if (content.default) {
+                content = content.default
+              } else if (content.toString) {
+                content = content.toString()
+              } else {
+                content = JSON.stringify(content)
+              }
+            }
+            
+            // Если не строка - пропускаем
+            if (typeof content !== 'string') {
+              console.error(`Файл ${path} не является строкой`)
+              continue
+            }
+            
+            // Парсим Frontmatter
+            const parsed = fm(content)
+            
+            // Получаем slug
             let slug = path.split('/').pop().replace(/\.md$/, '')
             slug = slug.replace(/\s+/g, '-')
             
-            // Пробуем получить метаданные из module
-            // unplugin-vue-markdown может хранить frontmatter в разных местах
-            const meta = module.__frontmatter || module.frontmatter || {}
-            
-            let image = meta.image || ''
+            let image = parsed.attributes.image || ''
             if (image) {
-              // Убираем слеш в начале если есть, добавляем baseUrl
               image = this.baseUrl + image.replace(/^\//, '')
             }
             
             loadedArticles.push({
               slug: slug,
-              title: meta.title || 'Без названия',
-              date: meta.date || '1970-01-01',
-              description: meta.description || '',
-              tags: Array.isArray(meta.tags) ? meta.tags : [],
+              title: parsed.attributes.title || 'Без названия',
+              date: parsed.attributes.date || '1970-01-01',
+              description: parsed.attributes.description || '',
+              tags: Array.isArray(parsed.attributes.tags) ? parsed.attributes.tags : [],
               image: image,
-              // Сохраняем компонент для быстрого доступа
-              component: module.default
+              content: parsed.body || ''
             })
             
           } catch (err) {
