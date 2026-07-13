@@ -149,6 +149,9 @@ export default {
                 image = `${this.baseUrl}images/${image}`
               }
             }
+
+            console.log('Raw image path:', parsed.attributes.image)
+            console.log('Processed image path:', image)
             
             loadedArticles.push({
               slug: slug,
