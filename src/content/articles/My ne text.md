@@ -2,7 +2,7 @@
 title: 'Обзор на Cyberpunk 2077: Phantom Liberty'
 date: 2026-07-13
 tags: ['Игры', 'Обзор', 'CDPR']
-image: '/myspot/images/cyberpunk.jpg'
+image: '/images/cyberpunk.jpg'
 description: 'Стоит ли возвращаться в Найт-Сити?'
 ---
 

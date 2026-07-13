@@ -2,7 +2,7 @@ var e=`---\r
 title: 'Обзор на Cyberpunk 2077: Phantom Liberty'\r
 date: 2026-07-13\r
 tags: ['Игры', 'Обзор', 'CDPR']\r
-image: '/myspot/images/cyberpunk.jpg'\r
+image: '/images/cyberpunk.jpg'\r
 description: 'Стоит ли возвращаться в Найт-Сити?'\r
 ---\r
 \r

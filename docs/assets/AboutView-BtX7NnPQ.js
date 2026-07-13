@@ -1,0 +1,1 @@
+import{i as e,n as t,s as n,u as r}from"./index-C7GkD0SZ.js";var i={class:`about`},a=t({__name:`AboutView`,setup(t){return(t,a)=>(r(),n(`div`,i,[...a[0]||=[e(`h1`,null,`About`,-1)]]))}},[[`__scopeId`,`data-v-477e1e1e`]]);export{a as default};
