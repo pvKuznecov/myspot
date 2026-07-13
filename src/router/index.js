@@ -11,7 +11,19 @@ const routes = [
         name: 'about',
         component: () => import('../views/AboutView.vue')
     },
-  // Добавляйте другие маршруты сюда
+    {
+      path: '/articles/:slug', // :slug - это динамическая часть
+      name: 'Article',
+      component: () => import('@/views/ArticleView.vue'),
+      // Пропс, чтобы не дергать useRoute внутри компонента (опционально)
+      props: true 
+    },
+    // Страница со списком всех статей (каталог)
+    {
+      path: '/articles',
+      name: 'ArticlesList',
+      component: () => import('@/views/ArticlesList.vue')
+    }
 ]
 
 const router = createRouter({

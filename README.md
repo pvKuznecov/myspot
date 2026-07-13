@@ -36,3 +36,12 @@ npm run serve
 ```sh
 npm run build
 ```
+
+
+
+
+##Обязательно!
+
+```sh
+npm install front-matter
+```
