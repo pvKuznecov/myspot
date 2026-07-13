@@ -31,7 +31,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/myspot/',
+  base: './',
   // 👇 Добавляем блок build
   build: {
     outDir: 'docs', // Папка для сборки
