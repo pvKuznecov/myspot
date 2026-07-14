@@ -1,9 +1,10 @@
 .main_header nav {
     display: flex;
+    min-width: 300px;
     flex-direction: row;
     justify-content: space-between;
     align-content: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .main_header nav a {
@@ -13,4 +14,18 @@
 
 .main_header nav a:hover {
     color: white;
+}
+
+.logo {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin-top: auto;
+    margin-bottom: auto;
+    background-image: url("/public/icons/gg_logo.jpg");
+    background-position: 50% 50%; /* Или: background-position: center; */
+    background-size: cover; /* Важно: без этого картинка может не отобразиться */
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    box-shadow: 1px 2px 10px black;
 }

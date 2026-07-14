@@ -95,7 +95,7 @@ export default {
 
 <style scoped>
 .article-page {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -144,7 +144,8 @@ export default {
 }
 
 .article-content {
-  background: #1a1a1a;
+  /* background: #1a1a1a; */
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 40px;
   border-radius: 12px;
 }
