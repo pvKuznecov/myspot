@@ -39,7 +39,7 @@ html, body {
     justify-content: space-around;
     align-content: center;
     gap: 10px;
-    min-height: 50px;
+    min-height: 100px;
     background-color: black;
     color: rgb(82, 166, 255);
     position: sticky;
@@ -48,3 +48,7 @@ html, body {
     border-radius: 5px;
     /* margin-bottom: 20px; */
  }
+
+ @media (max-width: 600px) {
+  .main-footer { display: block; min-height: 300px; position: inherit;  text-align: center;}
+}

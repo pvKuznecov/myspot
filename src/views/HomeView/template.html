@@ -1,0 +1,84 @@
+<div class="home">
+    <h1>Главная</h1>
+    
+    <!-- Состояние загрузки -->
+    <div v-if="loading" class="loading">Загрузка статей...</div>
+    
+    <!-- Состояние ошибки -->
+    <div v-else-if="error" class="error">{{ error }}</div>
+    
+    <!-- Контент -->
+    <template v-else>
+        <div class="home_element">
+            <div class="home_element_title">Новости</div>
+            <div class="articles_content">
+                <div class="articles_content_elem">a</div>
+                <div class="articles_content_elem">b</div>
+                <div class="articles_content_elem">c</div>
+            </div>
+            <span class="link_to_all">Смотреть все</span>
+        </div>
+        
+        <div class="home_element" v-if="articles.length > 0">
+            <div class="home_element_title">Статьи</div>
+            <div class="articles_content">
+                <div 
+                    v-for="(article, index) in articles.slice(0, 3)" 
+                    :key="article.slug || index" 
+                    class="articles_content_elem"
+                >
+                    <div class="article-card">
+                        <div class="article-image-wrapper">
+                            <img 
+                                v-if="article && article.image" 
+                                :src="article.image" 
+                                :alt="article.title || 'Статья'"
+                                loading="lazy"
+                                @error="handleImageError"
+                            />
+                            <div v-else class="no-image">📷 Нет изображения</div>
+                        </div>
+                        
+                        <div class="article-info">
+                            <h3 class="article-title">{{ article.title || 'Без названия' }}</h3>
+                            
+                            <div class="article-meta">
+                                <span class="article-date">📅 {{ formatDate(article.date) }}</span>
+                            </div>
+                            
+                            <p class="article-description">{{ article.description || 'Нет описания' }}</p>
+                            
+                            <div class="article-tags" v-if="article.tags && article.tags.length > 0">
+                                <span 
+                                    v-for="tag in article.tags.slice(0, 3)" 
+                                    :key="tag" 
+                                    class="tag"
+                                >
+                                    #{{ tag }}
+                                </span>
+                                <span v-if="article.tags.length > 3" class="tag-more">
+                                    +{{ article.tags.length - 3 }}
+                                </span>
+                            </div>
+                            
+                            <RouterLink 
+                                :to="`/articles/${article.slug}`" 
+                                class="read-more"
+                            >
+                                Читать далее →
+                            </RouterLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="link_to_all">
+                <RouterLink to="/articles" class="header_btn">Смотреть все</RouterLink>
+            </span>
+        </div>
+        
+        <!-- Если статей нет -->
+        <div v-else class="no-articles">
+            📝 Статьи не найдены
+        </div>
+    </template>
+</div>

@@ -1,0 +1,45 @@
+ <div>
+    <h1>Все статьи</h1>
+    
+    <div v-if="loading" class="loading">
+      <p>⏳ Загрузка статей...</p>
+    </div>
+
+    <div v-else-if="error" class="error">
+      <p>❌ Ошибка: {{ error }}</p>
+    </div>
+
+    <div v-else-if="articles.length === 0" class="empty">
+      <p>📝 Статей пока нет</p>
+      <p>Создайте файл в <code>src/content/articles/</code></p>
+    </div>
+
+    <article v-for="art in articles" :key="art.slug" class="article-item">
+      <router-link :to="`/articles/${art.slug}`" class="article-link">
+        <div v-if="art.image" class="article-image">
+          <img 
+            :src="art.image" 
+            :alt="art.title" 
+            loading="lazy"
+            @error="handleImageError"
+          />
+        </div>
+        <div v-else class="article-image-placeholder">
+          <span>📄</span>
+        </div>
+        
+        <div class="article-content">
+          <h2>{{ art.title }}</h2>
+          <div class="meta">
+            <time>{{ formatDate(art.date) }}</time>
+            <div class="tags">
+              <span v-for="tag in art.tags" :key="tag" class="tag">
+                #{{ tag }}
+              </span>
+            </div>
+          </div>
+          <p v-if="art.description" class="description">{{ art.description }}</p>
+        </div>
+      </router-link>
+    </article>
+  </div>

@@ -1,1 +1,0 @@
-import{d as e,i as t,n,s as r}from"./index-D9I63LPB.js";var i={class:`about`},a=n({__name:`AboutView`,setup(n){return(n,a)=>(e(),r(`div`,i,[...a[0]||=[t(`h1`,null,`About`,-1)]]))}},[[`__scopeId`,`data-v-477e1e1e`]]);export{a as default};

@@ -1,0 +1,15 @@
+  <div class="article-page">
+    <div v-if="loading" class="loading">
+      <div class="spinner">⏳</div>
+      <p>Загрузка статьи...</p>
+    </div>
+    
+    <div v-else-if="error" class="error">
+      <p>❌ {{ error }}</p>
+      <router-link to="/articles" class="back-link">← Вернуться к списку</router-link>
+    </div>
+    
+    <div v-else-if="article" class="article-content">
+      <component :is="article" />
+    </div>
+  </div>

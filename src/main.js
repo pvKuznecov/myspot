@@ -11,5 +11,5 @@ import './styles/markdown.css'
 const APP = createApp(App);
 
 APP.use(router);
-APP.use(BootstrapVue3)
+APP.use(BootstrapVue3);
 APP.mount('#app');

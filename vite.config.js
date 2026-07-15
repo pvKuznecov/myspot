@@ -32,7 +32,6 @@ export default defineConfig({
     },
   },
   base: './',
-  // 👇 Добавляем блок build
   build: {
     outDir: 'docs', // Папка для сборки
   },

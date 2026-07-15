@@ -1,9 +1,9 @@
 .main_header nav {
     display: flex;
-    min-width: 300px;
     flex-direction: row;
     justify-content: space-between;
     align-content: center;
+    min-width: 300px;
     gap: 20px;
 }
 
