@@ -65,7 +65,8 @@
     text-shadow: 1px 2px 5px black;
     color: #02fad9; }
 
-.articles_content {
+.articles_content,
+.blogs_content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
@@ -76,7 +77,8 @@
 }
 
 /* Карточка статьи */
-.articles_content_elem {
+.articles_content_elem,
+.blogs_content_elem {
     display: flex;
     flex-direction: column;
     background: #3a3a3a;
@@ -87,19 +89,22 @@
     min-height: 350px;
 }
 
-.articles_content_elem:hover {
+.articles_content_elem:hover,
+.blogs_content_elem:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.article-card {
+.article-card,
+.blog-card {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
 /* Изображение */
-.article-image-wrapper {
+.article-image-wrapper,
+.blog-image-wrapper {
     width: 100%;
     height: 200px;
     overflow: hidden;
@@ -107,14 +112,16 @@
     position: relative;
 }
 
-.article-image-wrapper img {
+.article-image-wrapper img,
+.blog-image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.articles_content_elem:hover .article-image-wrapper img {
+.articles_content_elem:hover .article-image-wrapper img,
+.blogs_content_elem:hover .blog-image-wrapper img {
     transform: scale(1.05);
 }
 
@@ -130,7 +137,8 @@
 }
 
 /* Информация о статье */
-.article-info {
+.article-info,
+.blog-info {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -138,7 +146,8 @@
     gap: 8px;
 }
 
-.article-title {
+.article-title,
+.blog-title {
     font-size: 18px;
     font-weight: 600;
     color: white;
@@ -150,7 +159,8 @@
     overflow: hidden;
 }
 
-.article-meta {
+.article-meta,
+.blog-meta {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -159,13 +169,15 @@
     margin-bottom: 4px;
 }
 
-.article-date {
+.article-date,
+.blog-date {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-.article-description {
+.article-description,
+.blog-description {
     font-size: 14px;
     color: #ccc;
     line-height: 1.5;
@@ -178,7 +190,8 @@
 }
 
 /* Теги */
-.article-tags {
+.article-tags,
+.blog-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;

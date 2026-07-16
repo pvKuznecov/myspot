@@ -75,11 +75,54 @@
             <span class="link_to_all">
                 <RouterLink to="/articles" class="header_btn">Смотреть все</RouterLink>
             </span>
-        </div>
-        
+        </div>        
         <!-- Если статей нет -->
         <div v-else class="no-articles">
             📝 Статьи не найдены
+        </div>
+
+        <!-- блок блогов -->
+        <div class="home_element" v-if="blogs.length > 0">
+            <div class="home_element_title"><span style="color: rgb(230, 2, 255);">Б</span><span>логи</span></div>
+            <div class="blogs_content">
+                <div v-for="(blog, index) in blogs.slice(0, 3)" :key="blog.slug || index" class="blogs_content_elem">
+                    <div class="blog-card">
+                        <div class="blog-image-wrapper">
+                            <img v-if="blog && blog.image" :src="blog.image" :alt="blog.title || 'Статья блога'" loading="lazy" @error="handleImageError"/>
+                            <div v-else class="no-image">📷 Нет изображения</div>
+                        </div>
+                        
+                        <div class="blog-info">
+                            <h3 class="blog-title">{{ blog.title || 'Без названия' }}</h3>
+                            
+                            <div class="blog-meta">
+                                <span class="blog-date">📅 {{ formatDate(blog.date) }}</span>
+                            </div>
+                            
+                            <p class="blog-description">{{ blog.description || 'Нет описания' }}</p>
+                            
+                            <div class="blog-tags" v-if="blog.tags && blog.tags.length > 0">
+                                <span v-for="tag in blog.tags.slice(0, 3)" :key="tag" class="tag">
+                                    #{{ tag }}
+                                </span>
+                                <span v-if="blog.tags.length > 3" class="tag-more">
+                                    +{{ blog.tags.length - 3 }}
+                                </span>
+                            </div>
+                            
+                            <RouterLink 
+                                :to="`/blogs/${blog.slug}`" 
+                                class="read-more"
+                            >
+                                Читать далее →
+                            </RouterLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="link_to_all">
+                <RouterLink to="/blogs" class="header_btn">Смотреть все</RouterLink>
+            </span>
         </div>
     </template>
 </div>
