@@ -9,7 +9,8 @@
     
     <!-- Контент -->
     <template v-else>
-        <div class="home_element">
+        <!-- блок новостей -->
+        <!-- <div class="home_element">
             <div class="home_element_title">Новости</div>
             <div class="articles_content">
                 <div class="articles_content_elem">a</div>
@@ -17,10 +18,10 @@
                 <div class="articles_content_elem">c</div>
             </div>
             <span class="link_to_all">Смотреть все</span>
-        </div>
-        
+        </div> -->
+        <!-- блок статей -->
         <div class="home_element" v-if="articles.length > 0">
-            <div class="home_element_title">Статьи</div>
+            <div class="home_element_title"><span style="color: rgb(230, 2, 255);">С</span><span>татьи</span></div>
             <div class="articles_content">
                 <div 
                     v-for="(article, index) in articles.slice(0, 3)" 

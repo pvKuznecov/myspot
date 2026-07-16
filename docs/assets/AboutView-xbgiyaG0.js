@@ -1,0 +1,1 @@
+import{d as e,i as t,n,s as r}from"./index-GrEMYnC2.js";var i={class:`about`};function a(n,a,o,s,c,l){return e(),r(`div`,i,[...a[0]||=[t(`h1`,null,`About`,-1)]])}var o=n({__name:`AboutView`,setup(e,{expose:t}){t();let n={};return Object.defineProperty(n,"__isScriptSetup",{enumerable:!1,value:!0}),n}},[[`render`,a]]);export{o as default};
