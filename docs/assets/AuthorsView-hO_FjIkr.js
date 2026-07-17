@@ -1,0 +1,1 @@
+import{d as e,i as t,n,s as r}from"./index-DIDf3Y_z.js";import{t as i}from"./front-matter-DBJUd9Xk.js";i();var a={class:`authors_aere`};function o(n,i,o,s,c,l){return e(),r(`div`,a,[...i[0]||=[t(`h1`,null,`Авторы`,-1)]])}var s=n({data(){return{blogs:[],loading:!1,error:!1,baseUrl:`./`}}},[[`render`,o]]);export{s as default};
