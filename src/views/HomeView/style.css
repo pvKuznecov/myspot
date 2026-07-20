@@ -118,6 +118,7 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    z-index: 1000;
 }
 
 .articles_content_elem:hover .article-image-wrapper img,

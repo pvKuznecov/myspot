@@ -23,11 +23,7 @@
         <div class="home_element" v-if="articles.length > 0">
             <div class="home_element_title"><span style="color: rgb(230, 2, 255);">С</span><span>татьи</span></div>
             <div class="articles_content">
-                <div 
-                    v-for="(article, index) in articles.slice(0, 3)" 
-                    :key="article.slug || index" 
-                    class="articles_content_elem"
-                >
+                <div v-for="(article, index) in articles.slice(0, 3)" :key="article.slug || index" class="articles_content_elem">
                     <div class="article-card">
                         <div class="article-image-wrapper">
                             <img 
