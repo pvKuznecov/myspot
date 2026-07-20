@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "serve": "vite",
-    "build": "vite build",
+    "build": "vite build && echo goodgeek.ru > docs/CNAME",
     "preview": "vite preview"
   },
   "dependencies": {
