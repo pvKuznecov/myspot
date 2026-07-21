@@ -1,0 +1,50 @@
+ <div class="circleslist">
+    <h1>Круги</h1>
+    <p class="circleslist_info">
+        Круг - это, прежде всего, люди, которые объеденины увлечением какой-либо темой: комиксы, кино, видеоигры, аниме, технологиями, настольные игры... Да чем угодно!
+        <br><br>
+        Здесь мы обсуждаем вселенные, выстраиваем таймлайны, собиарем коллекции и копаемся в деталях. Мы убеждены, что нас "таких" много, что у каждого есть свой круг, надо его просто найти.
+    </p>
+    
+    <div v-if="loading" class="loading">
+      <p>⏳ Загрузка статей...</p>
+    </div>
+
+    <div v-else-if="error" class="error">
+      <p>❌ Ошибка: {{ error }}</p>
+    </div>
+
+    <div v-else-if="circles.length === 0" class="empty">
+      <p>📝 Статей пока нет</p>
+      <p>Создайте файл в <code>src/content/circles/</code></p>
+    </div>
+
+    <circle v-for="art in circles" :key="art.slug" class="circle-item">
+      <router-link :to="`/circles/${art.slug}`" class="circle-link">
+        <div v-if="art.image" class="circle-image">
+          <img 
+            :src="art.image" 
+            :alt="art.title" 
+            loading="lazy"
+            @error="handleImageError"
+          />
+        </div>
+        <div v-else class="circles-image-placeholder">
+          <span>📄</span>
+        </div>
+        
+        <div class="circle-content">
+          <h2>{{ art.title }}</h2>
+          <div class="meta">
+            <time>{{ formatDate(art.date) }}</time>
+            <div class="tags">
+              <span v-for="tag in art.tags" :key="tag" class="tag">
+                #{{ tag }}
+              </span>
+            </div>
+          </div>
+          <p v-if="art.description" class="description">{{ art.description }}</p>
+        </div>
+      </router-link>
+    </circle>
+  </div>

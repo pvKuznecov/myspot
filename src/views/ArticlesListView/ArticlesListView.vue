@@ -4,7 +4,7 @@
 import fm from 'front-matter'
 
 export default {
-  name: 'ArticlesList',
+  name: 'ArticlesListView',
   
   data() {
     return {

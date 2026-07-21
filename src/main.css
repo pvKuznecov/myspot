@@ -25,10 +25,11 @@ html, body {
     justify-content: space-between;
     gap: 10px;
     align-content: center;
+    width: 100%;
     min-height: 50px;
     background-color: rgb(3, 26, 47);
     position: sticky;
-    top: 10px;
+    top: 0;
     border-radius: 5px;
     padding: 0 10px 0 5px;
     z-index: 10000;

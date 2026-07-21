@@ -27,12 +27,24 @@ const routes = [
     {
         path: '/articles',
         name: 'ArticlesList',
-        component: () => import('@/views/ArticlesList/ArticlesList.vue')
+        component: () => import('@/views/ArticlesListView/ArticlesListView.vue')
     },
     {
         path: '/authors',
         name: 'Authors',
         component: () => import('@/views/AuthorsView/AuthorsView.vue')
+    },
+    {
+        path: '/circles',
+        name: 'Circles',
+        component: () => import('@/views/CirclesListView/CirclesListView.vue')
+    },
+    {
+        path: '/circles/:slug', // :slug - это динамическая часть
+        name: 'Circle',
+        component: () => import('@/views/CircleView/CircleView.vue'),
+        // Пропс, чтобы не дергать useRoute внутри компонента (опционально)
+        props: true
     }
 ]
 

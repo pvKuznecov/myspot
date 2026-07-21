@@ -1,0 +1,140 @@
+.circle-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 60px 20px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  margin: 40px 0;
+}
+
+.loading {
+  color: #8ab4f8;
+}
+
+.spinner {
+  font-size: 48px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 15px;
+  color: #8ab4f8;
+  text-decoration: none;
+  padding: 8px 20px;
+  border: 1px solid #8ab4f8;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.back-link:hover {
+  background: #8ab4f8;
+  color: #1a1a1a;
+}
+
+.circle-content {
+  /* background: #1a1a1a; */
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  border-radius: 12px;
+}
+
+.circle-content :deep(h1) {
+  font-size: 2.2em;
+  border-bottom: 2px solid #333;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.circle-content :deep(h2) {
+  font-size: 1.8em;
+  margin-top: 1.5em;
+  color: #8ab4f8;
+}
+
+.circle-content :deep(h3) {
+  font-size: 1.4em;
+  margin-top: 1.2em;
+  color: #a0c4ff;
+}
+
+.circle-content :deep(p) {
+  line-height: 1.8;
+  color: #d0d0d0;
+  margin: 16px 0;
+}
+
+.circle-content :deep(pre) {
+  background: #0d0d0d;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.circle-content :deep(code) {
+  background: #2d2d2d;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+.circle-content :deep(pre code) {
+  background: transparent;
+  padding: 0;
+}
+
+.circle-content :deep(blockquote) {
+  border-left: 4px solid #8ab4f8;
+  padding-left: 20px;
+  margin: 20px 0;
+  color: #aaa;
+  font-style: italic;
+}
+
+.circle-content :deep(img) {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.circle-content :deep(ul), 
+.circle-content :deep(ol) {
+  padding-left: 25px;
+  color: #d0d0d0;
+}
+
+.circle-content :deep(li) {
+  margin: 8px 0;
+}
+
+.circle-content :deep(a) {
+  color: #8ab4f8;
+  text-decoration: none;
+}
+
+.circle-content :deep(a:hover) {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .circle-content {
+    padding: 20px;
+  }
+}
